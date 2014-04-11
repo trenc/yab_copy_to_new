@@ -2,7 +2,7 @@ h1. yab_copy_to_new
 
 p. Displays a new button in article write tab to copy the current article to a new one.
 
-p. *Version:* 0.1
+p. *Version:* 0.2
 
 h2. Table of contents
 
@@ -22,15 +22,26 @@ p. yab_copy_to_new's  minimum requirements:
 h2(#help-config03). Configuration
 
 Install and activate the plugin.
+
 The following form fields will not be copied by default:
 * all of hidden type
 * an exclude array of posted day and time and the url_title
-You can modify this exclude array on your own, it's the first variable in the yab_copy_to_new() function.
+You can modify this exclude array on your own,
+
+The function yab_ctn_config() contains an array with some config values and a commented example of the array which places the button near the top »Create new button«.
+
+* @'exclude'@: Javascript array with field to excluded from copying
+* @'position_selector'@: a valid jQery selector (used by @position_method@)
+* @'position_method'@: any jQuery DOM insert method (after, prepend, append, before etc.)
+* @'class'@: html class applied to teh button
+* @'style'@: inline style attribute aplied to the button
 
 h2(#help-section10). Changelog
 
 * v0.1: 2014-02-06
 ** initial release
+* v0.2: 2014-04-11
+** feature: enhanced config for placing/styling the button
 
 h2(#help-section11). Licence
 
