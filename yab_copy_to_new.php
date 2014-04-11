@@ -2,7 +2,7 @@
 
 $plugin['name'] = 'yab_copy_to_new';
 $plugin['allow_html_help'] = 0;
-$plugin['version'] = '0.1';
+$plugin['version'] = '0.2';
 $plugin['author'] = 'Tommy Schmucker';
 $plugin['author_uri'] = 'http://www.yablo.de/';
 $plugin['description'] = 'Copy the current article content to a new one.';
@@ -59,6 +59,34 @@ if (!defined('txpinterface'))
  * Version 3: http://www.gnu.org/licenses/gpl-3.0.html
  */
 
+/**
+ * Config var
+ *
+ * @param string  $what
+ * @return string 
+ */
+function yab_ctn_config($what)
+{
+	$config = array(
+		'exclude'           => '["url_title", "year", "month", "day", "hour", "minute", "second"]',
+		'position_selector' => '#write-save', // a valid jQery selector
+		'position_method'   => 'append', // any jQuery DOM insert method
+		'class'             => 'publish', // html class applied to element
+		'style'             => 'margin-left: 0.5em;' // inline style attribute
+	);
+
+	// example config for button placed near top »Create new« button
+// 	$config = array(
+// 		'exclude'           => '["url_title", "year", "month", "day", "hour", "minute", "second"]',
+// 		'position_selector' => '.action-create', // a valid jQery selector
+// 		'position_method'   => 'append', // any jQuery DOM insert method
+// 		'class'             => '', // html class applied to element
+// 		'style'             => 'margin-left: 0.5em;' // inline style attribute
+// 	);
+
+	return $config[$what];
+}
+
 if (@txpinterface == 'admin')
 {
 	register_callback(
@@ -69,7 +97,7 @@ if (@txpinterface == 'admin')
 }
 
 /**
- * Echo the plugin JavaScript on article write tab..
+ * Echo the plugin JavaScript on article write tab.
  *
  * @return void Echos the JavaScript
  */
@@ -78,15 +106,11 @@ function yab_copy_to_new()
 	global $event;
 
 	// Config: name attribute for excluded fields (JavaScript array)
-	$exclude = '[
-		"url_title",
-		"year",
-		"month",
-		"day",
-		"hour",
-		"minute",
-		"second"
-	]';
+	$exclude  = yab_ctn_config('exclude');
+	$anchor   = yab_ctn_config('position_selector');
+	$method   = yab_ctn_config('position_method');
+	$class    = yab_ctn_config('class');
+	$style    = yab_ctn_config('style');
 
 	$buttontext = gTxt('yab_copy_to_new');
 
@@ -157,9 +181,9 @@ function yab_copy_to_new()
 
 	var j_form = $('#article_form');
 
-	var button = '<button id="yab-copy-to-new" class="publish" tabindex="5" style="margin-left: 0.5em">$buttontext</button>';
+	var button = '<button id="yab-copy-to-new" class="$class" tabindex="5" style="$style">$buttontext</button>';
 
-	$('#write-publish, #write-save').append(button);
+	$('$anchor').$method(button);
 
 		j_form.on('click', '#yab-copy-to-new', function(ev) {
 		ev.preventDefault();
@@ -193,7 +217,7 @@ h1. yab_copy_to_new
 
 p. Displays a new button in article write tab to copy the current article to a new one.
 
-p. *Version:* 0.1
+p. *Version:* 0.2
 
 h2. Table of contents
 
@@ -213,15 +237,26 @@ p. yab_copy_to_new's  minimum requirements:
 h2(#help-config03). Configuration
 
 Install and activate the plugin.
+
 The following form fields will not be copied by default:
 * all of hidden type
 * an exclude array of posted day and time and the url_title
-You can modify this exclude array on your own, it's the first variable in the yab_copy_to_new() function.
+You can modify this exclude array on your own,
+
+The function yab_ctn_config() contains an array with some config values and a commented example of the array which places the button near the top »Create new button«.
+
+* @'exclude'@: Javascript array with field to excluded from copying
+* @'position_selector'@: a valid jQery selector (used by @position_method@)
+* @'position_method'@: any jQuery DOM insert method (after, prepend, append, before etc.)
+* @'class'@: html class applied to teh button
+* @'style'@: inline style attribute aplied to the button
 
 h2(#help-section10). Changelog
 
 * v0.1: 2014-02-06
 ** initial release
+* v0.2: 2014-04-11
+** feature: enhanced config for placing/styling the button
 
 h2(#help-section11). Licence
 
